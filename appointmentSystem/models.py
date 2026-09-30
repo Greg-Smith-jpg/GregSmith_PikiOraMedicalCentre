@@ -44,4 +44,4 @@ class Appointment(models.Model):
     status = models.CharField(max_length=20, default='Booked')
 
     def __str__(self):
-        return f'{self.patient.name} - {self.appointment_slot}'
+        return f'{self.patient.username} - {self.appointment_slot}'

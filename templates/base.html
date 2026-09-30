@@ -1,0 +1,47 @@
+{%  load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Piki Ora Medical Centre{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            Piki Ora Medical Centre
+        </a>
+
+        <div>
+            <a class="btn btn-outline-primary" href="{% url 'home' %}">
+                Home
+            </a>
+            <a class="btn btn-outline-primary" href="{% url 'login' %}">
+                Login
+            </a>
+        </div>
+    </div>
+</nav>
+
+<main class="container mt-4">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrW5eN0z6d1gZ9B6L5rN4b5B"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

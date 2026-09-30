@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+Doctors
+{% endblock %}
+
+{% block content %}
+
+<h1>Our Doctors</h1>
+
+{% for doctor in doctors %}
+
+<div>
+    <h2>{{ doctor.name }}</h2>
+    <p>Email: {{ doctor.email }}</p>
+    <p>Phone: {{ doctor.phone }}</p>
+
+    <a href="{% url 'doctor_slots' doctor.id %}">
+        Book this doctor
+    </a>
+    <p> </p>
+</div>
+
+{% empty %}
+
+<p>No doctors are currently available.</p>
+
+{% endfor %}
+
+{% endblock %}

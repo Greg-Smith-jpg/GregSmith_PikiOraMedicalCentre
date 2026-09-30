@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}
+Appointment Slots
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ doctor.name }}</h1>
+
+<p>Specialty: {{ doctor.speciality }}</p>
+
+<h2>Available Appointment Slots</h2>
+
+{% for slot in slots %}
+
+    <div>
+        <p>
+            Date: {{ slot.date }}
+            Time: {{ slot.time|time:"g:i A" }}
+        </p>
+
+        <a href="{% url 'book_appointment' slot.id %}">
+            Book
+        </a>
+    </div>
+
+{% empty %}
+
+    <p>No available appointment slots.</p>
+
+{% endfor %}
+
+{% endblock %}
