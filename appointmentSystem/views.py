@@ -3,7 +3,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from .forms import DoctorForm, AppointmentBookingForm, AppointmentReasonForm
+from .models import Doctor, Appointment, AppointmentSlot
 
 
 # Create your views here.
@@ -39,8 +41,6 @@ def register(request):
 
 
 def doctors(request):
-    from .models import Doctor
-
     doctors = Doctor.objects.all()
 
     return render(
@@ -51,8 +51,6 @@ def doctors(request):
 
 
 def doctor_slots(request, doctor_id):
-    from .models import Doctor
-
     doctor = Doctor.objects.get(id=doctor_id)
     slots = doctor.appointment_slots.filter(is_available=True)
 
@@ -68,8 +66,6 @@ def doctor_slots(request, doctor_id):
 
 @login_required
 def book_appointment(request, slot_id):
-    from .models import AppointmentSlot, Appointment
-
     slot = AppointmentSlot.objects.get(id=slot_id)
 
     if not slot.is_available:
@@ -114,8 +110,6 @@ def book_appointment(request, slot_id):
 
 @login_required
 def my_appointments(request):
-    from .models import Appointment
-
     appointments = Appointment.objects.filter(
         patient=request.user,
         status="Booked"
@@ -130,8 +124,6 @@ def my_appointments(request):
 
 @login_required
 def cancel_appointment(request, appointment_id):
-    from .models import Appointment
-
     appointment = Appointment.objects.get(
         id=appointment_id,
         patient=request.user
@@ -156,8 +148,6 @@ def cancel_appointment(request, appointment_id):
 
 @login_required
 def edit_reason(request, appointment_id):
-    from .models import Appointment
-
     appointment = Appointment.objects.get(
         id=appointment_id,
         patient=request.user
@@ -192,8 +182,6 @@ def is_admin(user):
 
 @user_passes_test(is_admin)
 def admin_dashboard(request):
-    from .models import Doctor, Appointment
-
     doctors = Doctor.objects.all()
 
     for doctor in doctors:
@@ -237,8 +225,6 @@ def add_doctor(request):
 
 @user_passes_test(is_admin)
 def edit_doctor(request, doctor_id):
-    from .models import Doctor
-
     doctor = Doctor.objects.get(id=doctor_id)
 
     if request.method == "POST":
@@ -273,8 +259,6 @@ def edit_doctor(request, doctor_id):
 @login_required
 @user_passes_test(is_admin)
 def delete_doctor(request, doctor_id):
-    from .models import Doctor, Appointment
-
     doctor = Doctor.objects.get(id=doctor_id)
 
     if request.method == "POST":
@@ -308,8 +292,6 @@ def delete_doctor(request, doctor_id):
 
 @user_passes_test(is_admin)
 def manage_slots(request, doctor_id):
-    from .models import Doctor
-
     doctor = Doctor.objects.get(id=doctor_id)
 
     slots = doctor.appointment_slots.order_by(
@@ -329,8 +311,6 @@ def manage_slots(request, doctor_id):
 
 @user_passes_test(is_admin)
 def add_slot(request, doctor_id):
-    from .models import Doctor, AppointmentSlot
-
     doctor = Doctor.objects.get(id=doctor_id)
 
     if request.method == "POST":
@@ -362,8 +342,6 @@ def add_slot(request, doctor_id):
 
 @user_passes_test(is_admin)
 def edit_slot(request, slot_id):
-    from .models import AppointmentSlot
-
     slot = AppointmentSlot.objects.get(id=slot_id)
 
     if request.method == "POST":
@@ -393,8 +371,6 @@ def edit_slot(request, slot_id):
 
 @user_passes_test(is_admin)
 def delete_slot(request, slot_id):
-    from .models import AppointmentSlot, Appointment
-
     slot = AppointmentSlot.objects.get(id=slot_id)
 
     doctor_id = slot.doctor.id
@@ -430,8 +406,6 @@ def delete_slot(request, slot_id):
 
 @user_passes_test(is_admin)
 def admin_appointments(request):
-    from .models import Appointment
-
     appointments = Appointment.objects.select_related(
         "patient",
         "appointment_slot__doctor"
@@ -451,8 +425,6 @@ def admin_appointments(request):
 
 @user_passes_test(is_admin)
 def admin_edit_appointment(request, appointment_id):
-    from .models import Appointment
-
     appointment = Appointment.objects.get(
         id=appointment_id
     )
@@ -491,8 +463,6 @@ def admin_edit_appointment(request, appointment_id):
 
 @user_passes_test(is_admin)
 def admin_cancel_appointment(request, appointment_id):
-    from .models import Appointment
-
     appointment = Appointment.objects.get(
         id=appointment_id
     )
@@ -517,8 +487,6 @@ def admin_cancel_appointment(request, appointment_id):
 
 @user_passes_test(is_admin)
 def manage_patients(request):
-    from django.contrib.auth.models import User
-
     patients = User.objects.filter(
         is_staff=False
     ).order_by("username")
@@ -534,8 +502,6 @@ def manage_patients(request):
 
 @user_passes_test(is_admin)
 def toggle_patient_status(request, patient_id):
-    from django.contrib.auth.models import User
-
     patient = User.objects.get(
         id=patient_id,
         is_staff=False
