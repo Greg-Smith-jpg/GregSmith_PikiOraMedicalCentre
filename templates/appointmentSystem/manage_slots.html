@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Manage Appointment Slots
+{% endblock %}
+
+{% block content %}
+
+<h1>Manage Appointment Slots</h1>
+
+<h2>Dr. {{ doctor.name }}</h2>
+
+<p>
+    Speciality: {{ doctor.speciality }}
+</p>
+
+<a href="{% url 'add_slot' doctor.id %}"
+   class="btn btn-primary">
+    Add Appointment Slot
+</a>
+
+<a href="{% url 'admin_dashboard' %}"
+   class="btn btn-secondary">
+    Back to Dashboard
+</a>
+
+<hr>
+
+{% for slot in slots %}
+
+    <div class="card mb-3">
+        <div class="card-body">
+
+            <h5 class="card-title">
+                {{ slot.date }} at {{ slot.time }}
+            </h5>
+
+            {% if slot.is_available %}
+                <p class="text-success">
+                    Available
+                </p>
+            {% else %}
+                <p class="text-danger">
+                    Booked
+                </p>
+            {% endif %}
+
+            <a href="{% url 'edit_slot' slot.id %}"
+               class="btn btn-sm btn-primary">
+                Edit
+            </a>
+
+            {% if slot.is_available %}
+
+                <form method="post"
+                      action="{% url 'delete_slot' slot.id %}"
+                      style="display: inline;"
+                      onsubmit="return confirm('Are you sure you want to delete this appointment slot?');">
+
+                    {% csrf_token %}
+
+                    <button type="submit"
+                            class="btn btn-sm btn-danger">
+                        Delete
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+{% empty %}
+
+    <p>
+        No appointment slots have been created for this doctor.
+    </p>
+
+{% endfor %}
+
+{% endblock %}

@@ -1,48 +1,108 @@
 {% extends "base.html" %}
 
 {% block title %}
-My Appointments
+    My Appointments
 {% endblock %}
 
 {% block content %}
 
-<h1>My Appointments</h1>
+    <h1>My Appointments</h1>
 
-{% for appointment in appointments %}
+    {% for appointment in appointments %}
 
-    <div>
-        <h2>{{ appointment.appointment_slot.doctor.name }}</h2>
+        <div>
+            <h2>{{ appointment.appointment_slot.doctor.name }}</h2>
 
-        <p>
-            Speciality:
-            {{ appointment.appointment_slot.doctor.speciality }}
-        </p>
+            <p>
+                Speciality:
+                {{ appointment.appointment_slot.doctor.speciality }}
+            </p>
 
-        <p>
-            Date:
-            {{ appointment.appointment_slot.date }}
-        </p>
+            <p>
+                Date:
+                {{ appointment.appointment_slot.date }}
+            </p>
 
-        <p>
-            Time:
-            {{ appointment.appointment_slot.time|time:"g:i A" }}
-        </p>
+            <p>
+                Time:
+                {{ appointment.appointment_slot.time|time:"g:i A" }}
+            </p>
 
-        <p>
-            Status:
-            {{ appointment.status }}
-        </p>
-    {% if appointment.status == "Booked" %}
-    <a href="{% url 'cancel_appointment' appointment.id %}">
-        Cancel Appointment
-    </a>
-{% endif %}
-    </div>
+            <p>
+                Status:
+                {{ appointment.status }}
+            </p>
+            <form method="post" action="{% url 'edit_reason' appointment.id %}">
+                {% csrf_token %}
 
-{% empty %}
+                <p>
+                    <strong>Reason:</strong>
 
-    <p>You don't have any appointments.</p>
+                    <span id="reason-display-{{ appointment.id }}">
+            {{ appointment.reason }}
+        </span>
 
-{% endfor %}
+                    <button
+                            type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            onclick="editReason({{ appointment.id }})">
+                        Edit
+                    </button>
+                </p>
 
+                <div id="reason-edit-{{ appointment.id }}" style="display: none;">
+
+        <textarea
+                name="reason"
+                class="form-control mb-2"
+                rows="3"
+                required
+        >{{ appointment.reason }}</textarea>
+
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        Save
+                    </button>
+
+                    <button
+                            type="button"
+                            class="btn btn-sm btn-secondary"
+                            onclick="cancelEdit({{ appointment.id }})">
+                        Cancel
+                    </button>
+
+                </div>
+            </form>
+            {% if appointment.status == "Booked" %}
+                <a href="{% url 'cancel_appointment' appointment.id %}">
+                    Cancel Appointment
+                </a>
+            {% endif %}
+        </div>
+
+    {% empty %}
+
+        <p>You don't have any appointments.</p>
+
+    {% endfor %}
+    <script>
+        function editReason(id) {
+            document.getElementById("reason-display-" + id).style.display = "none";
+
+            document.querySelector(
+                "#reason-display-" + id + " + button"
+            ).style.display = "none";
+
+            document.getElementById("reason-edit-" + id).style.display = "block";
+        }
+
+        function cancelEdit(id) {
+            document.getElementById("reason-display-" + id).style.display = "inline";
+
+            document.querySelector(
+                "#reason-display-" + id + " + button"
+            ).style.display = "inline-block";
+
+            document.getElementById("reason-edit-" + id).style.display = "none";
+        }
+    </script>
 {% endblock %}

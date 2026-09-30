@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Edit Appointment Slot
+{% endblock %}
+
+{% block content %}
+
+<h1>Edit Appointment Slot</h1>
+
+<h2>Dr. {{ slot.doctor.name }}</h2>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="date" class="form-label">
+            Date
+        </label>
+
+        <input type="date"
+               id="date"
+               name="date"
+               class="form-control"
+               value="{{ slot.date|date:'Y-m-d' }}"
+               required>
+    </div>
+
+    <div class="mb-3">
+        <label for="time" class="form-label">
+            Time
+        </label>
+
+        <input type="time"
+               id="time"
+               name="time"
+               class="form-control"
+               value="{{ slot.time|time:'H:i' }}"
+               required>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        Save Changes
+    </button>
+
+    <a href="{% url 'manage_slots' slot.doctor.id %}"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add Appointment Slot
+{% endblock %}
+
+{% block content %}
+
+<h1>Add Appointment Slot</h1>
+
+<h2>Dr. {{ doctor.name }}</h2>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="date" class="form-label">
+            Date
+        </label>
+
+        <input type="date"
+               id="date"
+               name="date"
+               class="form-control"
+               required>
+    </div>
+
+    <div class="mb-3">
+        <label for="time" class="form-label">
+            Time
+        </label>
+
+        <input type="time"
+               id="time"
+               name="time"
+               class="form-control"
+               required>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        Add Slot
+    </button>
+
+    <a href="{% url 'manage_slots' doctor.id %}"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+
+</form>
+
+{% endblock %}

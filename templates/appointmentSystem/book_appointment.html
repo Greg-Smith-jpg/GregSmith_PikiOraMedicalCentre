@@ -26,6 +26,20 @@ Book Appointment
 
 <form method="post">
     {% csrf_token %}
+ <div class="mb-3">
+        <label for="reason" class="form-label">
+            Reason for appointment
+        </label>
+
+        <textarea
+            id="reason"
+            name="reason"
+            class="form-control"
+            rows="4"
+            placeholder="Please enter the reason for your appointment..."
+            required
+        ></textarea>
+    </div>
 
     <button type="submit">
         Confirm Booking
