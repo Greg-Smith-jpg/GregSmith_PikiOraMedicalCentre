@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Appointments
+{% endblock %}
+
+{% block content %}
+
+<h1>My Appointments</h1>
+
+{% for appointment in appointments %}
+
+    <div>
+        <h2>{{ appointment.appointment_slot.doctor.name }}</h2>
+
+        <p>
+            Speciality:
+            {{ appointment.appointment_slot.doctor.speciality }}
+        </p>
+
+        <p>
+            Date:
+            {{ appointment.appointment_slot.date }}
+        </p>
+
+        <p>
+            Time:
+            {{ appointment.appointment_slot.time|time:"g:i A" }}
+        </p>
+
+        <p>
+            Status:
+            {{ appointment.status }}
+        </p>
+    {% if appointment.status == "Booked" %}
+    <a href="{% url 'cancel_appointment' appointment.id %}">
+        Cancel Appointment
+    </a>
+{% endif %}
+    </div>
+
+{% empty %}
+
+    <p>You don't have any appointments.</p>
+
+{% endfor %}
+
+{% endblock %}

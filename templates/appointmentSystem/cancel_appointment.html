@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+Cancel Appointment
+{% endblock %}
+
+{% block content %}
+
+<h1>Cancel Appointment</h1>
+
+<p>
+    Are you sure you want to cancel this appointment?
+</p>
+
+<p>
+    Doctor:
+    {{ appointment.appointment_slot.doctor.name }}
+</p>
+
+<p>
+    Date:
+    {{ appointment.appointment_slot.date }}
+</p>
+
+<p>
+    Time:
+    {{ appointment.appointment_slot.time|time:"g:i A" }}
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <button type="submit" class="btn btn-danger">
+        Confirm Cancellation
+    </button>
+
+    <a href="{% url 'my_appointments' %}" class="btn btn-secondary">
+        Go Back
+    </a>
+</form>
+
+{% endblock %}

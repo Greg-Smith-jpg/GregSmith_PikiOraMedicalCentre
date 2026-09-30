@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -27,13 +28,16 @@ def doctor_slots(request, doctor_id):
             'slots': slots
         }
     )
-
+@login_required
 def book_appointment(request, slot_id):
     from .models import AppointmentSlot, Appointment
 
     slot = AppointmentSlot.objects.get(id=slot_id)
 
     if request.method == "POST":
+        if not slot.is_available:
+            return redirect("doctors")
+
         Appointment.objects.create(
             patient=request.user,
             appointment_slot=slot
@@ -42,10 +46,47 @@ def book_appointment(request, slot_id):
         slot.is_available = False
         slot.save()
 
-        return redirect("home")
+        return redirect("my_appointments")
 
     return render(
         request,
         "appointmentSystem/book_appointment.html",
         {"slot": slot}
+    )
+
+@login_required
+def my_appointments(request):
+    from .models import Appointment
+    appointments = Appointment.objects.filter(
+        patient=request.user,
+        status="Booked"
+    )
+    return render(
+        request,
+        'appointmentSystem/my_appointments.html',
+        {'appointments': appointments}
+    )
+
+@login_required
+def cancel_appointment(request, appointment_id):
+    from .models import Appointment
+
+    appointment = Appointment.objects.get(
+        id=appointment_id,
+        patient=request.user
+    )
+
+    if request.method == "POST":
+        appointment.appointment_slot.is_available = True
+        appointment.appointment_slot.save()
+
+        appointment.status = "Cancelled"
+        appointment.save()
+
+        return redirect("my_appointments")
+
+    return render(
+        request,
+        "appointmentSystem/cancel_appointment.html",
+        {"appointment": appointment}
     )
